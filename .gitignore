@@ -1,0 +1,5 @@
+obj/
+bin/
+*.out
+tp3
+vgcore*
