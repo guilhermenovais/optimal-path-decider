@@ -7,7 +7,8 @@
 void Solution::run() {
   char strategy;
   int V, E;
-  std::cin >> strategy >> V >> E;
+  std::cin >> strategy;
+  std::cin >> V >> E;
   Graph graph = Graph(V);
   std::unordered_map<std::string, int> nameToIdMap;
   int currentId = 0;
