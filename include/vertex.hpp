@@ -5,8 +5,10 @@
 
 class Vertex {
 public:
+  int id;
   std::string name;
-  explicit Vertex(const std::string &name);
+  Vertex(int id, const std::string &name);
+  Vertex();
 };
 
 #endif // VERTEX_HPP

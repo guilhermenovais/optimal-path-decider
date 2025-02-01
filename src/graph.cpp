@@ -1,20 +1,67 @@
 #include "../include/graph.hpp"
+#include <limits>
+#include <string>
+#include <vector>
 
-void Graph::addVertex(const std::string &name) {
-  vertices.emplace_back(name);
-  adjMatrix[name] = {};
+Graph::Graph(int qtdVertices)
+    : qtdVertices(qtdVertices), vertices(std::vector<Vertex>(qtdVertices)),
+      adjMatrix(std::vector<std::vector<int>>(qtdVertices)) {}
+
+void Graph::addVertex(int id, const std::string &name) {
+  Vertex newVertex = Vertex(id, name);
+  vertices[id] = newVertex;
+  adjMatrix[id] = std::vector<int>(qtdVertices);
 }
 
-void Graph::addEdge(const std::string &from, const std::string &to,
-                    int weight) {
-  edges.emplace_back(from, to, weight);
+void Graph::addEdge(const int from, const int to, int weight) {
   adjMatrix[from][to] = weight;
   adjMatrix[to][from] = weight;
 }
 
+int Graph::calculatePathCost(std::vector<int> path) {
+  int cost = 0;
+  for (int i = 1; i < int(path.size()); i++) {
+    cost += adjMatrix[path[i - 1]][path[i]];
+  }
+  cost += adjMatrix[path[path.size() - 1]][path[0]];
+  return cost;
+}
+
+void Graph::findShortestPath(std::vector<int> &path, int start, int &minCost,
+                             std::vector<int> &bestPath) {
+  if (start == int(path.size())) {
+    int cost = calculatePathCost(path);
+    if (cost < minCost) {
+      minCost = cost;
+      bestPath = path;
+    }
+    return;
+  }
+
+  for (int i = start; i < int(path.size()); i++) {
+    std::swap(path[start], path[i]);
+    findShortestPath(path, start + 1, minCost, bestPath);
+    std::swap(path[start], path[i]);
+  }
+}
+
 std::pair<int, std::vector<std::string>> Graph::tspBruteForce() {
-  // Implementação da força bruta
-  return {0, {}};
+  std::vector<int> cities = std::vector<int>(qtdVertices);
+  for (int i = 0; i < qtdVertices; i++) {
+    cities[i] = i;
+  }
+
+  int minCost = std::numeric_limits<int>::max();
+  std::vector<int> bestPath = std::vector<int>(qtdVertices);
+
+  findShortestPath(cities, 0, minCost, bestPath);
+
+  std::vector<std::string> bestPathStr;
+  for (const int id : bestPath) {
+    bestPathStr.push_back(vertices[id].name);
+  }
+
+  return {minCost, bestPathStr};
 }
 
 std::pair<int, std::vector<std::string>> Graph::tspDynamicProgramming() {

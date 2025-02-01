@@ -1,3 +1,4 @@
 #include "../include/vertex.hpp"
 
-Vertex::Vertex(const std::string &name) : name(name) {}
+Vertex::Vertex(int id, const std::string &name) : id(id), name(name) {}
+Vertex::Vertex() : id(-1), name("") {};

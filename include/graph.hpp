@@ -1,24 +1,27 @@
 #ifndef GRAPH_HPP
 #define GRAPH_HPP
 
-#include "../include/edge.hpp"
 #include "../include/vertex.hpp"
-#include <unordered_map>
 #include <vector>
 
 class Graph {
 public:
-  std::vector<Vertex> vertices;
-  std::vector<Edge> edges;
-  std::unordered_map<std::string, std::unordered_map<std::string, int>>
-      adjMatrix;
-
-  void addVertex(const std::string &name);
-  void addEdge(const std::string &from, const std::string &to, int weight);
+  void addVertex(int id, const std::string &name);
+  void addEdge(const int from, const int to, int weight);
 
   std::pair<int, std::vector<std::string>> tspBruteForce();
   std::pair<int, std::vector<std::string>> tspDynamicProgramming();
   std::pair<int, std::vector<std::string>> tspGreedy();
+  Graph(int qtdVertices);
+
+private:
+  int qtdVertices;
+  std::vector<Vertex> vertices;
+  std::vector<std::vector<int>> adjMatrix;
+
+  int calculatePathCost(std::vector<int> path);
+  void findShortestPath(std::vector<int> &path, int start, int &minCost,
+                        std::vector<int> &bestPath);
 };
 
 #endif // GRAPH_HPP
