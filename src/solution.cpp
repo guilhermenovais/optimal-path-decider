@@ -6,14 +6,14 @@
 
 void Solution::run() {
   char strategy;
-  int V, E;
+  int qtdVertices, qtdEdges;
   std::cin >> strategy;
-  std::cin >> V >> E;
-  Graph graph = Graph(V);
+  std::cin >> qtdVertices >> qtdEdges;
+  Graph graph = Graph(qtdVertices);
   std::unordered_map<std::string, int> nameToIdMap;
   int currentId = 0;
 
-  for (int i = 0; i < E; i++) {
+  for (int i = 0; i < qtdEdges; i++) {
     std::string from, to;
     int weight;
     std::cin >> from >> to >> weight;
