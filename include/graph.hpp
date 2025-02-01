@@ -18,10 +18,13 @@ private:
   int qtdVertices;
   std::vector<Vertex> vertices;
   std::vector<std::vector<int>> adjMatrix;
+  std::vector<std::vector<int>> memo;
 
   int calculatePathCost(std::vector<int> path);
   void findShortestPath(std::vector<int> &path, int start, int &minCost,
                         std::vector<int> &bestPath);
+  int dynamicProgrammingRecursion(int mask, int curr, std::vector<int> &path,
+                                  std::vector<int> &bestPath);
 };
 
 #endif // GRAPH_HPP

@@ -64,9 +64,55 @@ std::pair<int, std::vector<std::string>> Graph::tspBruteForce() {
   return {minCost, bestPathStr};
 }
 
+int Graph::dynamicProgrammingRecursion(int mask, int curr,
+                                       std::vector<int> &path,
+                                       std::vector<int> &bestPath) {
+  if (mask == (1 << qtdVertices) - 1) {
+    return adjMatrix[curr][0];
+  }
+
+  if (memo[curr][mask] != -1)
+    return memo[curr][mask];
+
+  int minCost = std::numeric_limits<int>::max();
+  for (int next = 0; next < qtdVertices; next++) {
+    if ((mask & (1 << next)) == 0) {
+      path.push_back(next);
+      int cost =
+          adjMatrix[curr][next] +
+          dynamicProgrammingRecursion(mask | (1 << next), next, path, bestPath);
+      path.pop_back();
+
+      if (cost < minCost) {
+        minCost = cost;
+        bestPath = path;
+      }
+    }
+  }
+
+  return memo[curr][mask] = minCost;
+}
+
 std::pair<int, std::vector<std::string>> Graph::tspDynamicProgramming() {
-  // Implementação da programação dinâmica
-  return {0, {}};
+  std::vector<int> path = {0}, bestPath;
+  memo.assign(qtdVertices, std::vector<int>(1 << qtdVertices, -1));
+
+  int minCost = dynamicProgrammingRecursion(1, 0, path, bestPath);
+
+  std::vector<std::string> bestPathStr;
+  std::vector<bool> isInside = std::vector<bool>(qtdVertices);
+  for (int id : bestPath) {
+    isInside[id] = true;
+    bestPathStr.push_back(vertices[id].name);
+  }
+
+  for (int i = 0; i < qtdVertices; i++) {
+    if (!isInside[i]) {
+      bestPathStr.push_back(vertices[i].name);
+    }
+  }
+
+  return {minCost, bestPathStr};
 }
 
 std::pair<int, std::vector<std::string>> Graph::tspGreedy() {
