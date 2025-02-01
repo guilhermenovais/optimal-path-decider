@@ -64,52 +64,60 @@ std::pair<int, std::vector<std::string>> Graph::tspBruteForce() {
   return {minCost, bestPathStr};
 }
 
-int Graph::dynamicProgrammingRecursion(int mask, int curr,
-                                       std::vector<int> &path,
-                                       std::vector<int> &bestPath) {
-  if (mask == (1 << qtdVertices) - 1) {
-    return adjMatrix[curr][0];
+int Graph::dynamicProgrammingRecursion(
+    int visitedVerticesBitwise, int currentVertex,
+    std::vector<std::vector<int>> &memoryTable,
+    std::vector<std::vector<int>> &prevMemoryTable) {
+  if (visitedVerticesBitwise == (1 << qtdVertices) - 1) {
+    return adjMatrix[currentVertex][0];
   }
 
-  if (memo[curr][mask] != -1)
-    return memo[curr][mask];
+  if (memoryTable[currentVertex][visitedVerticesBitwise] != -1) {
+    return memoryTable[currentVertex][visitedVerticesBitwise];
+  }
 
   int minCost = std::numeric_limits<int>::max();
-  for (int next = 0; next < qtdVertices; next++) {
-    if ((mask & (1 << next)) == 0) {
-      path.push_back(next);
-      int cost =
-          adjMatrix[curr][next] +
-          dynamicProgrammingRecursion(mask | (1 << next), next, path, bestPath);
-      path.pop_back();
+  int bestNext = -1;
 
+  for (int next = 0; next < qtdVertices; next++) {
+    if ((visitedVerticesBitwise & (1 << next)) == 0) {
+      int newMask = visitedVerticesBitwise | (1 << next);
+      int cost = adjMatrix[currentVertex][next] +
+                 dynamicProgrammingRecursion(newMask, next, memoryTable,
+                                             prevMemoryTable);
       if (cost < minCost) {
         minCost = cost;
-        bestPath = path;
+        bestNext = next;
       }
     }
   }
 
-  return memo[curr][mask] = minCost;
+  prevMemoryTable[currentVertex][visitedVerticesBitwise] = bestNext;
+  return memoryTable[currentVertex][visitedVerticesBitwise] = minCost;
 }
 
 std::pair<int, std::vector<std::string>> Graph::tspDynamicProgramming() {
-  std::vector<int> path = {0}, bestPath;
-  memo.assign(qtdVertices, std::vector<int>(1 << qtdVertices, -1));
+  std::vector<std::vector<int>> memoryTable(
+      qtdVertices, std::vector<int>(1 << qtdVertices, -1));
+  std::vector<std::vector<int>> prevMemoryTable(
+      qtdVertices, std::vector<int>(1 << qtdVertices, -1));
 
-  int minCost = dynamicProgrammingRecursion(1, 0, path, bestPath);
+  int minCost = dynamicProgrammingRecursion(1, 0, memoryTable, prevMemoryTable);
 
-  std::vector<std::string> bestPathStr;
-  std::vector<bool> isInside = std::vector<bool>(qtdVertices);
-  for (int id : bestPath) {
-    isInside[id] = true;
-    bestPathStr.push_back(vertices[id].name);
+  std::vector<int> bestPath;
+  int mask = 1, curr = 0;
+  while (true) {
+    bestPath.push_back(curr);
+    int next = prevMemoryTable[curr][mask];
+    if (next == -1)
+      break;
+    mask |= (1 << next);
+    curr = next;
   }
 
-  for (int i = 0; i < qtdVertices; i++) {
-    if (!isInside[i]) {
-      bestPathStr.push_back(vertices[i].name);
-    }
+  std::vector<std::string> bestPathStr;
+  for (int id : bestPath) {
+    bestPathStr.push_back(vertices[id].name);
   }
 
   return {minCost, bestPathStr};
@@ -150,6 +158,7 @@ std::pair<int, std::vector<std::string>> Graph::tspGreedy() {
   }
 
   minCost += adjMatrix[currentCity][0];
+  bestPath.push_back(0);
 
   std::vector<std::string> bestPathStr;
   for (const int id : bestPath) {

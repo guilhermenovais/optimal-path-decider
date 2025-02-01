@@ -23,8 +23,10 @@ private:
   int calculatePathCost(std::vector<int> path);
   void findShortestPath(std::vector<int> &path, int start, int &minCost,
                         std::vector<int> &bestPath);
-  int dynamicProgrammingRecursion(int mask, int curr, std::vector<int> &path,
-                                  std::vector<int> &bestPath);
+  int dynamicProgrammingRecursion(
+      int visitedVerticesBitwise, int currentVertex,
+      std::vector<std::vector<int>> &memoryTable,
+      std::vector<std::vector<int>> &prevMemoryTable);
 };
 
 #endif // GRAPH_HPP
