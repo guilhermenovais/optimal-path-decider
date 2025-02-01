@@ -7,8 +7,7 @@
 void Solution::run() {
   char strategy;
   int qtdVertices, qtdEdges;
-  // std::cin >> strategy;
-  strategy = 'b';
+  std::cin >> strategy;
   std::cin >> qtdVertices >> qtdEdges;
   Graph graph = Graph(qtdVertices);
   std::unordered_map<std::string, int> nameToIdMap;
