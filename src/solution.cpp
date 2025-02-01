@@ -51,8 +51,11 @@ void Solution::run() {
   }
 
   std::cout << result.first << std::endl;
-  for (const auto &city : result.second) {
-    std::cout << city << " ";
+  for (int i = 0; i < int(result.second.size()); i++) {
+    std::cout << result.second[i];
+    if (i != int(result.second.size() - 1)) {
+      std::cout << " ";
+    }
   }
   std::cout << std::endl;
 }
