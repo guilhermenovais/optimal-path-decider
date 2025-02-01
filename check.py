@@ -1,7 +1,6 @@
 import os
 import subprocess
 from difflib import ndiff
-from termcolor import colored
 
 
 class bcolors:
@@ -20,7 +19,7 @@ def run_test_cases(executable, testcases_dir):
     input_dir = os.path.join(testcases_dir, "inputs")
     output_dir = os.path.join(testcases_dir, "outputs")
 
-    for i in range(1, 9):
+    for i in range(1, 11):
         input_file = os.path.join(input_dir, f"testCase{i:02}.txt")
         expected_output_file = os.path.join(output_dir, f"testCase{i:02}.txt")
 
