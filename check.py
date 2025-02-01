@@ -55,7 +55,7 @@ def run_test_cases(executable, testcases_dir):
 
 
 if __name__ == "__main__":
-    executable_path = "./tp2"
+    executable_path = "./tp3"
     testcases_path = "./testcases"
 
     if not os.path.exists(executable_path):
