@@ -132,33 +132,29 @@ std::pair<int, std::vector<std::string>> Graph::tspGreedy() {
   int minCost = 0;
   std::vector<int> bestPath;
   std::vector<bool> visited(qtdVertices, false);
-
   int currentCity = 0;
-  bestPath.push_back(currentCity);
   visited[currentCity] = true;
+  bestPath.push_back(currentCity);
 
-  for (int step = 1; step < qtdVertices; step++) {
-    int nextCity = -1;
-    int minDist = std::numeric_limits<int>::max();
-
+  for (int count = 1; count < qtdVertices; count++) {
+    int nearestCity = -1;
+    int nearestDistance = std::numeric_limits<int>::max();
     for (int i = 0; i < qtdVertices; i++) {
-      if (!visited[i] && adjMatrix[currentCity][i] < minDist) {
-        minDist = adjMatrix[currentCity][i];
-        nextCity = i;
+      if (!visited[i] && adjMatrix[currentCity][i] < nearestDistance) {
+        nearestDistance = adjMatrix[currentCity][i];
+        nearestCity = i;
       }
     }
-
-    if (nextCity == -1)
+    if (nearestCity == -1) {
       break;
-
-    bestPath.push_back(nextCity);
-    visited[nextCity] = true;
-    minCost += minDist;
-    currentCity = nextCity;
+    }
+    visited[nearestCity] = true;
+    bestPath.push_back(nearestCity);
+    minCost += nearestDistance;
+    currentCity = nearestCity;
   }
 
   minCost += adjMatrix[currentCity][0];
-  bestPath.push_back(0);
 
   std::vector<std::string> bestPathStr;
   for (const int id : bestPath) {
